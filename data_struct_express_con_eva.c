@@ -11,6 +11,7 @@ typedef struct{
     int top;
 } stackInt;
 
+int closeOperator(char check);
 int isDegit(char check);
 int isOperator(char check);
 int evalute();
@@ -29,11 +30,11 @@ int main(){
 
     in_to_post(infix,postfix);
     int i = 0;
-    while(postfix[i] != '\0'){
-         printf("%c",postfix[i]);
-         i++;
-    }
 
+    while (postfix[i] != '\0'){
+        printf("%c",postfix[i]);
+        i++;
+}
 
     return 0;
 }
@@ -42,13 +43,23 @@ void in_to_post(char* infix,char* postfix){
     stackChar operators;
     char operator_for_postfix; 
     operators.top = -1;
-    
+    char temp_for_express;
     int i = 0; 
     int j = 0;
 
     while(infix[i] != '\0'){
         if(isOperator(infix[i])){
             pushChar(&operators,infix[i]);
+             
+        }else if(closeOperator(infix[i])){
+            while (operators.top >= 0 &&
+                   operators.data[operators.top] != '(' &&
+                   operators.data[operators.top] != '[') {
+                popChar(&operators, &temp_for_express);
+                postfix[j++] = temp_for_express;
+        }
+        popChar(&operators, &temp_for_express);
+          
         }else if(isDegit(infix[i])){
             postfix[j] = infix[i];
             j++;
@@ -95,7 +106,11 @@ int isDegit(char check){
 }
 
 int isOperator(char check){
-    return check == '+' || check == '-' || check == '*' ||
-           check == '/' || check == '(' || check == ')' ||
-           check == '[' || check == ']';
+    return check == '+' || check == '-' || 
+           check == '*' || check == '/' ||
+           check == '(' || check == '[';
+}
+
+int closeOperator(char check){
+    return check == ')' || check == ']';
 }
