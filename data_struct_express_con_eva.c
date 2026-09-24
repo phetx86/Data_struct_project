@@ -12,13 +12,14 @@ typedef struct{
 } stackInt;
 
 int closeOperator(char check);
-int isDegit(char check);
+int isDigit(char check);
 int isOperator(char check);
 int evalute();
 void in_to_post(char* infix,char* postfix);
 void pop();
 int pushChar(stackChar* storage , char operator);
 int popChar(stackChar* storage , char* value);
+int precedence(char operator);
 
 
 int main(){
@@ -48,19 +49,29 @@ void in_to_post(char* infix,char* postfix){
     int j = 0;
 
     while(infix[i] != '\0'){
-        if(isOperator(infix[i])){
+        if(infix[i] == '(' || infix[i] == '['){
             pushChar(&operators,infix[i]);
              
-        }else if(closeOperator(infix[i])){
+        }else if(isOperator(infix[i])){
             while (operators.top >= 0 &&
                    operators.data[operators.top] != '(' &&
-                   operators.data[operators.top] != '[') {
+                   operators.data[operators.top] != '[' &&
+                    precedence(operators.data[operators.top]) >= infix[i]) {
                 popChar(&operators, &temp_for_express);
                 postfix[j++] = temp_for_express;
         }
-        popChar(&operators, &temp_for_express);
+        pushChar(&operators, infix[i]);
           
-        }else if(isDegit(infix[i])){
+        }else if(closeOperator(infix[i])){
+            while(operators.top >= 0 &&
+                    operators.data[operators.top] != '(' &&
+                    operators.data[operators.top] != '['){
+                popChar(&operators, &temp_for_express);
+                postfix[j++] = temp_for_express;
+            }
+            popChar(&operators , &temp_for_express);
+
+        }else if(isDigit(infix[i])){
             postfix[j] = infix[i];
             j++;
         }
@@ -101,16 +112,21 @@ int popChar(stackChar* storage, char* value){
 
 
 
-int isDegit(char check){
+int isDigit(char check){
     return check >= '0' && check <= '9';
 }
 
 int isOperator(char check){
     return check == '+' || check == '-' || 
-           check == '*' || check == '/' ||
-           check == '(' || check == '[';
+           check == '*' || check == '/';
 }
 
 int closeOperator(char check){
     return check == ')' || check == ']';
+}
+
+int precedence(char operator){
+    if(operator == '+' || operator == '-') return 1;
+    if(operator == '*' || operator == '/') return 2;
+    return 0;
 }
