@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define max 100
+#define max 500
 
 typedef struct{
     char data[max];
@@ -28,20 +28,25 @@ int main(){
     char infix[max];
     char postfix[max];
     
-    printf("Input must be a using decimal digits(0-9) and operators(+,-,*,/,(,),[,]),Do not use consecutive operators\n");
+    printf("======================= INFIX -> POSTFIX CALCULATOR =======================\n");
+    printf("Input must be a using decimal digits(0-9) and operators(+,-,*,/,(,),[,])\nDo not use consecutive operators\n");
+    printf("===========================================================================\n");
     printf("Input expression: ");
     scanf("%99s",infix);
     
     in_to_post(infix,postfix);
     int i = 0;
 
+    printf("Infix : %s\n", infix);
+
+    printf("Postfix : ");
     while (postfix[i] != '\0'){
         printf("%c",postfix[i]);
         i++;
     }
     
     int output = evaluator(postfix);
-    printf("\nResule After Evaluate: ");
+    printf("\nResult After Evaluate : ");
     printf("%d",output);
 
     return 0;
