@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define max 500
+#define max 100
 
 typedef struct{
     char data[max];
